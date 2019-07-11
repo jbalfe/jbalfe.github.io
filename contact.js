@@ -1,45 +1,48 @@
-$(function () {
+const form = document.getElementById('contact-form')
+const url = 'https://i7n2hydt8e.execute-api.us-east-1.amazonaws.com/dev/email/send'
+const toast = document.getElementById('toast')
+const submit = document.getElementById('submit')
 
-    // init the validator
-    // validator files are included in the download package
-    // otherwise download from http://1000hz.github.io/bootstrap-validator
+function post(url, body, callback) {
+  var req = new XMLHttpRequest();
+  req.open("POST", url, true);
+  req.setRequestHeader("Content-Type", "application/json");
+  req.addEventListener("load", function () {
+    if (req.status < 400) {
+      callback(null, JSON.parse(req.responseText));
+    } else {
+      callback(new Error("Request failed: " + req.statusText));
+    }
+  });
+  req.send(JSON.stringify(body));
+}
+function success () {
+  toast.innerHTML = 'Thanks for sending me a message! I\'ll get in touch with you ASAP. :)'
+  submit.disabled = false
+  submit.blur()
+  form.name.focus()
+  form.name.value = ''
+  form.email.value = ''
+  form.content.value = ''
+}
+function error (err) {
+  toast.innerHTML = 'There was an error with sending your message, hold up until I fix it. Thanks for waiting.'
+  submit.disabled = false
+  console.log(err)
+}
 
-    $('#contact-form').validator();
+form.addEventListener('submit', function (e) {
+  e.preventDefault()
+  toast.innerHTML = 'Sending'
+  submit.disabled = true
 
-
-    // when the form is submitted
-    $('#contact-form').on('submit', function (e) {
-
-        // if the validator does not prevent form submit
-        if (!e.isDefaultPrevented()) {
-            var url = "contact.php";
-
-            // POST values in the background the the script URL
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: $(this).serialize(),
-                success: function (data)
-                {
-                    // data = JSON object that contact.php returns
-
-                    // we recieve the type of the message: success x danger and apply it to the 
-                    var messageAlert = 'alert-' + data.type;
-                    var messageText = data.message;
-
-                    // let's compose Bootstrap alert box HTML
-                    var alertBox = '<div class="alert ' + messageAlert + ' alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + messageText + '</div>';
-                    
-                    // If we have messageAlert and messageText
-                    if (messageAlert && messageText) {
-                        // inject the alert to .messages div in our form
-                        $('#contact-form').find('.messages').html(alertBox);
-                        // empty the form
-                        $('#contact-form')[0].reset();
-                    }
-                }
-            });
-            return false;
-        }
-    })
-});
+  const payload = {
+    name: form.name.value,
+    email: form.email.value,
+    content: form.content.value
+  }
+  post(url, payload, function (err, res) {
+    if (err) { return error(err) }
+    success()
+  })
+})
