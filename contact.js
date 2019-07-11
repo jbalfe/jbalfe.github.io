@@ -41,7 +41,7 @@ form.addEventListener('submit', function (e) {
     name: form.name.value,
     surname: form.surname.value,
     email: form.email.value,
-    reason: form.reason.value,
+    need: form.need.value,
 
     content: form.content.value
   }
