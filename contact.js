@@ -17,11 +17,12 @@ function post(url, body, callback) {
   req.send(JSON.stringify(body));
 }
 function success () {
-  toast.innerHTML = 'Thanks for sending me a message! I\'ll get in touch with you ASAP. :)'
+  toast.innerHTML = 'Thanks for sending me a message! I\'ll be in touch with you ASAP. :)'
   submit.disabled = false
   submit.blur()
   form.name.focus()
   form.name.value = ''
+  form.surname.value = ''
   form.email.value = ''
   form.content.value = ''
 }
@@ -38,7 +39,10 @@ form.addEventListener('submit', function (e) {
 
   const payload = {
     name: form.name.value,
+    surname: form.surname.value,
     email: form.email.value,
+    reason: form.reason.value,
+
     content: form.content.value
   }
   post(url, payload, function (err, res) {
