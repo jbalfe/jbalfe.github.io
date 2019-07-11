@@ -17,7 +17,8 @@ function post(url, body, callback) {
   req.send(JSON.stringify(body));
 }
 function success () {
-  toast.innerHTML = 'Thanks for sending me a message! I\'ll be in touch with you ASAP. :)'
+  //toast.innerHTML = 'Thanks for sending me a message! I\'ll be in touch with you ASAP. :)'
+  
   submit.disabled = false
   submit.blur()
   form.name.focus()
@@ -25,6 +26,7 @@ function success () {
   form.surname.value = ''
   form.email.value = ''
   form.content.value = ''
+  form.need.value = ''
 }
 function error (err) {
   toast.innerHTML = 'There was an error with sending your message, hold up until I fix it. Thanks for waiting.'
